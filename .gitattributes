@@ -1,1 +1,15 @@
 * text=auto !eol
+/.classpath -text svneol=unset#application/xml
+/.project -text svneol=unset#application/xml
+.settings/org.eclipse.jdt.core.prefs -text
+.settings/org.eclipse.m2e.core.prefs -text
+.settings/org.eclipse.wst.common.component -text svneol=unset#application/xml
+.settings/org.eclipse.wst.common.project.facet.core.xml -text svneol=unset#application/xml
+.settings/org.eclipse.wst.validation.prefs -text
+.settings/org.maven.ide.eclipse.prefs -text
+/pom.xml -text svneol=unset#application/xml
+src/main/java/org/cd2h/slack/README.txt -text
+src/main/resources/META-INF/taglib.tld -text svneol=unset#application/xml
+src/non-packaged-resources/Model.clay -text svneol=unset#application/xml
+src/test/java/org/cd2h/slack/README.txt -text
+src/test/resources/README.txt -text
