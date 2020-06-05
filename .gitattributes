@@ -8,7 +8,8 @@
 .settings/org.eclipse.wst.validation.prefs -text
 .settings/org.maven.ide.eclipse.prefs -text
 /pom.xml -text svneol=unset#application/xml
-src/main/java/org/cd2h/slack/README.txt -text
+src/main/java/org/cd2h/slack/util/SlackAPI.java -text
+src/main/java/org/cd2h/slack/util/Tester.java -text
 src/main/resources/META-INF/taglib.tld -text svneol=unset#application/xml
 src/non-packaged-resources/Model.clay -text svneol=unset#application/xml
 src/test/java/org/cd2h/slack/README.txt -text
