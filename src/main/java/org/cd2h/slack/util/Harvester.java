@@ -99,28 +99,36 @@ public class Harvester extends SlackAPI {
     }
 
     public static void fetchMessages() throws SQLException {
-	PreparedStatement fetchStmt = conn.prepareStatement("select id from cd2h_slack.channel where name='general'");
-	ResultSet fetchRS = fetchStmt.executeQuery();
-	while (fetchRS.next()) {
-	    String channelID = fetchRS.getString(1);
-	    String cursor = null;
-	    do {
-		JSONObject result = fetch("conversations.history", "&channel=" + channelID + "&limit=1000"+(cursor == null ? "" : "&cursor="+cursor));
-		for (int i = 0; i < result.getJSONArray("messages").length(); i++) {
-		    JSONObject message = result.getJSONArray("messages").getJSONObject(i);
-		    logger.info("message: " + message.toString(3));
+    	PreparedStatement channelStmt = conn.prepareStatement("select channel.name from cd2h_slack.person,cd2h_slack.member,cd2h_slack.channel where person.id=member.user_id and member.channel_id=channel.id and display_name='analytics' order by name");
+    	ResultSet channelRS = channelStmt.executeQuery();
+    	while (channelRS.next()) {
+    		String channel = channelRS.getString(1);
 
-		    PreparedStatement stmt = conn.prepareStatement("insert into cd2h_slack.message_raw values(?,?::jsonb)");
-		    stmt.setString(1, channelID);
-		    stmt.setString(2, message.toString(3));
-		    stmt.execute();
-		    stmt.close();
-		}
-		JSONObject response = result.optJSONObject("response_metadata");
-		cursor = response == null ? null : response.optString("next_cursor");
-	    } while (cursor != null);
-	}
-	fetchStmt.close();
+    		PreparedStatement fetchStmt = conn.prepareStatement("select id from cd2h_slack.channel where name=?");
+    		fetchStmt.setString(1, channel);
+    		ResultSet fetchRS = fetchStmt.executeQuery();
+    		while (fetchRS.next()) {
+    			String channelID = fetchRS.getString(1);
+    			String cursor = null;
+    			do {
+    				JSONObject result = fetch("conversations.history", "&channel=" + channelID + "&limit=1000"+(cursor == null ? "" : "&cursor="+cursor));
+    				for (int i = 0; i < result.getJSONArray("messages").length(); i++) {
+    					JSONObject message = result.getJSONArray("messages").getJSONObject(i);
+    					logger.info("message: " + message.toString(3));
+
+    					PreparedStatement stmt = conn.prepareStatement("insert into cd2h_slack.message_raw values(?,?::jsonb)");
+    					stmt.setString(1, channelID);
+    					stmt.setString(2, message.toString(3));
+    					stmt.execute();
+    					stmt.close();
+    				}
+    				JSONObject response = result.optJSONObject("response_metadata");
+    				cursor = response == null ? null : response.optString("next_cursor");
+    			} while (cursor != null);
+    		}
+    		fetchStmt.close();
+    	}
+    	channelStmt.close();
     }
 
     public static JSONObject fetch(String entity, String params) {
