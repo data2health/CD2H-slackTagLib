@@ -10,8 +10,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -19,7 +19,7 @@ import edu.uiowa.extraction.LocalProperties;
 import edu.uiowa.extraction.PropertyLoader;
 
 public class Harvester extends SlackAPI {
-    static Logger logger = Logger.getLogger(Harvester.class);
+	static Logger logger = LogManager.getLogger(Harvester.class);
     protected static LocalProperties prop_file = null;
     static Connection conn = null;
 
@@ -28,7 +28,6 @@ public class Harvester extends SlackAPI {
     static String suffix = "&pretty=1";
     
 	static public void main(String[] args) throws ClassNotFoundException, SQLException {
-		PropertyConfigurator.configure(args[0]);
 		prop_file = PropertyLoader.loadProperties("slack");
 		conn = getConnection();
 
